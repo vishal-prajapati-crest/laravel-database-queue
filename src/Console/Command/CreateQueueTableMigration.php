@@ -4,39 +4,29 @@ namespace Garbetjie\Laravel\DatabaseQueue\Console\Command;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Queue\Console\TableCommand;
-use function str_replace;
+use Illuminate\Support\Str;
 
 class CreateQueueTableMigration extends TableCommand
 {
-    /**
-     * @var string
-     */
     protected $signature = 'garbetjie:database-queue:table';
 
-    /**
-     * @var string
-     */
     protected $description = 'Create the migration for enabling optimistic locking on the queue table.';
 
-    /**
-     * @param string $table
-     * @return string
-     */
     protected function createBaseMigration($table = 'jobs')
     {
         return $this->laravel['migration.creator']->create(
-            'enable_optimistic_locking_on_'.$table.'_table', $this->laravel->databasePath().'/migrations'
+            'enable_optimistic_locking_on_'.$table.'_table',
+            $this->laravel->databasePath().'/migrations'
         );
     }
 
     /**
-     * @param string $path
-     * @param string $table
-     * @param string $tableClassName
      * @throws FileNotFoundException
      */
-    protected function replaceMigration($path, $table, $tableClassName)
+    protected function replaceMigration($path, $table)
     {
+        $tableClassName = Str::studly($table);
+
         $stub = str_replace(
             ['{{table}}', '{{tableClassName}}'],
             [$table, $tableClassName],
