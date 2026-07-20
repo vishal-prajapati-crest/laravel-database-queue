@@ -67,3 +67,12 @@ for some additional configuration options:
 
 * **1.3.0**
     * Add support for Laravel 8.
+
+* **1.4.1**
+  * Laravel 9 support (Crest fork)
+
+
+* **1.5.0**
+  * Add Laravel 10, 11, 12, and 13 support
+  * Pass `after_commit` config to queue constructor
+  * Remove unused `selectJob()` method

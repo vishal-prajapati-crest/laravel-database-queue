@@ -9,16 +9,16 @@
             "email": "geoff@garbers.co.za"
         }
     ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/database": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+        "illuminate/queue": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0"
+    },
     "autoload": {
         "psr-4": {
-            "Garbetjie\\Laravel\\DatabaseQueue\\": "src"
+            "Garbetjie\\Laravel\\DatabaseQueue\\": "src/"
         }
-    },
-   "require": {
-        "php": "^8.1",
-        "illuminate/database": "^8.0|^9.0",
-        "illuminate/support": "^8.0|^9.0",
-        "illuminate/queue": "^8.0|^9.0"
     },
     "extra": {
         "laravel": {
@@ -26,5 +26,7 @@
                 "Garbetjie\\Laravel\\DatabaseQueue\\ServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

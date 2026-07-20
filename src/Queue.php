@@ -8,8 +8,6 @@ use Illuminate\Queue\DatabaseQueue;
 use Illuminate\Queue\Jobs\DatabaseJob;
 use Illuminate\Queue\Jobs\DatabaseJobRecord;
 use Illuminate\Support\Collection;
-use stdClass;
-use function mt_rand;
 
 class Queue extends DatabaseQueue
 {
@@ -71,15 +69,15 @@ class Queue extends DatabaseQueue
      */
     protected function markJobAsReserved($job)
     {
+        $versionColumn = $this->database->getQueryGrammar()->wrap('version');
+
         $affected = $this->database->table($this->table)
             ->where('id', $job->id)
             ->where('version', $job->version)
             ->update([
                 'reserved_at' => $job->touch(),
                 'attempts' => $job->increment(),
-                'version' => new Expression(
-                    $this->database->getQueryGrammar()->wrap('version') . ' + 1'
-                )
+                'version' => new Expression("{$versionColumn} + 1"),
             ]);
 
         return $affected > 0 ? $job : null;
@@ -113,7 +111,7 @@ class Queue extends DatabaseQueue
 
         // If there are no jobs available, then return null.
         if ($available->isEmpty()) {
-            return;
+            return null;
         }
 
         // Shuffle the available jobs, and iterate over them and return the first job that can be claimed.
@@ -126,6 +124,7 @@ class Queue extends DatabaseQueue
                 return $claimed;
             }
         }
+        return null;
     }
 
     /**
@@ -136,23 +135,8 @@ class Queue extends DatabaseQueue
      */
     public function deleteReserved($queue, $id)
     {
-        $this->database->table($this->table)->where('id', $id)->delete();
-    }
-
-    /**
-     * @param Collection $jobs
-     *
-     * @return stdClass
-     */
-    private function selectJob($jobs)
-    {
-        $count = $jobs->count();
-
-        if ($count === 1) {
-            $jobs[0];
-        }
-
-        return (object)$jobs[mt_rand(0, $count - 1)];
+        // $this->database->table($this->table)->where('id', $id)->delete();
+        parent::deleteReserved($queue, $id);
     }
 
     /**
